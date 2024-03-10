@@ -13,6 +13,6 @@ func ConnetDatabase() {
 		panic(err)
 	}
 
-	db.AutoMigrate(&Class{})
+	db.AutoMigrate(&Class{}, &Murid{})
 	DB = db
 }

@@ -4,6 +4,7 @@ import HomeView from '../views/HomeView.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    // murid route 
     {
       path: '/',
       name: 'home',
@@ -11,9 +12,21 @@ const router = createRouter({
     },
     {
       path: '/murid',
-      name: 'muridIndex',
-      component: () => import('../views/siswa/indexView.vue')
+      name: 'murid.index',
+      component: () => import('../views/siswa/index.vue')
     },
+    {
+      path: '/murid/create',
+      name: 'murid.create',
+      component: () => import('../views/siswa/create.vue')
+    },
+    {
+      path: '/murid/:id',
+      name: 'murid.edit',
+      component: () => import('../views/siswa/edit.vue')
+    },
+
+    // class route 
     {
       path: '/class',
       name: 'classIndex',

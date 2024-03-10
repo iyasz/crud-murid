@@ -2,6 +2,7 @@ package main
 
 import (
 	"backend/controllers/classcontroller"
+	"backend/controllers/muridcontroller"
 	"backend/models"
 
 	"github.com/gofiber/fiber/v2"
@@ -19,8 +20,8 @@ func main() {
 
 	// api class
 
-	api := app.Group("/api")
-	class := api.Group("/class")
+	classApi := app.Group("/api")
+	class := classApi.Group("/class")
 
 	class.Get("/", classcontroller.Index)
 	class.Post("/", classcontroller.Store)
@@ -28,6 +29,17 @@ func main() {
 	class.Get("/:id", classcontroller.Edit)
 	class.Put("/:id", classcontroller.Update)
 	class.Delete("/:id", classcontroller.Delete)
+
+	// api murid
+
+	muridApi := app.Group("/api")
+	murid := muridApi.Group("/murid")
+
+	murid.Get("/", muridcontroller.Index)
+	murid.Post("/", muridcontroller.Store)
+	murid.Get("/:id", muridcontroller.Edit)
+	murid.Put("/:id", muridcontroller.Update)
+	murid.Delete("/:id", muridcontroller.Delete)
 
 	// Atur rute dan handler
 	app.Get("/", func(c *fiber.Ctx) error {

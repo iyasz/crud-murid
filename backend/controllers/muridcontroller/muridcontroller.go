@@ -1,4 +1,4 @@
-package classcontroller
+package muridcontroller
 
 import (
 	"backend/models"
@@ -8,30 +8,36 @@ import (
 )
 
 func Index(c *fiber.Ctx) error {
-	var class []models.Class
-	models.DB.Find(&class)
+	var murids []models.Murid
 
-	return c.Status(fiber.StatusOK).JSON(class)
+	// Mengambil data murid beserta data kelas yang terkait
+	if err := models.DB.Preload("Class").Find(&murids).Error; err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Tidak Bisa Menampilkan Data!",
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(murids)
 }
 
 func Store(c *fiber.Ctx) error {
 	
-	var class models.Class
+	var murid models.Murid
 
-	if err := c.BodyParser(&class); err != nil {
+	if err := c.BodyParser(&murid); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"message": err.Error(),
 		})
 	}
 
-	if err := models.DB.Create(&class).Error; err != nil {
+	if err := models.DB.Create(&murid).Error; err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"message": err.Error(),
 		})
 	}
 
 	return c.JSON(fiber.Map{
-		"message": "Class has been created!",
+		"message": "Murid has been created!",
 	})
 
 }
@@ -39,8 +45,8 @@ func Store(c *fiber.Ctx) error {
 func Edit(c *fiber.Ctx) error {
 
 	id := c.Params("id")
-	var class models.Class
-	if err := models.DB.First(&class, id).Error; err != nil {
+	var murid models.Murid
+	if err := models.DB.First(&murid, id).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 				"message": "Data Not Found!",
@@ -53,21 +59,21 @@ func Edit(c *fiber.Ctx) error {
 
 	}
 
-	return c.JSON(class)
+	return c.JSON(murid)
 
 }
 
 func Update(c *fiber.Ctx) error {
 	id := c.Params("id")
-	var class models.Class
+	var murid models.Murid
 
-	if err := c.BodyParser(&class); err != nil {
+	if err := c.BodyParser(&murid); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"message": err.Error(),
 		})
 	}
 
-	if models.DB.Where("id = ?", id).Updates(&class).RowsAffected == 0 {
+	if models.DB.Where("id = ?", id).Updates(&murid).RowsAffected == 0 {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"message": "Cann't Updated Data!",
 		})
@@ -76,13 +82,12 @@ func Update(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{
 		"message": "Data Berhasil Diubah!",
 	})
-
 }
 
 func Delete(c *fiber.Ctx) error {
 	id := c.Params("id")
-	var class models.Class
-	if models.DB.Delete(&class, id).RowsAffected == 0 {
+	var murid models.Murid
+	if models.DB.Delete(&murid, id).RowsAffected == 0 {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"message": "Tidak Dapat Menghapus Data!",
 		})
